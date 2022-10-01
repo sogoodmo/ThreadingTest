@@ -4,7 +4,7 @@ import concurrent.futures
 import time
 import requests
 import random
-NUM_THREADS = 16
+NUM_THREADS = 1
 
 '''
 Free to download and use image URLs
@@ -27,10 +27,6 @@ IMG_URLS = [
     'https://images.unsplash.com/photo-1549692520-acc6669e2f0c'
 ]
 
-def test_func(seconds : int) -> None:
-    print(f'Sleeping {seconds} second(s)')
-    time.sleep(seconds)
-    print(f'Done Sleeping {seconds}')
     
 def download_img(url : string, threaded : bool) -> None:
     img_bytes = requests.get(url).content
@@ -42,19 +38,29 @@ def download_img(url : string, threaded : bool) -> None:
 
     
 '''
-Testing speed up when using threads to download a list of High Res Images 
++=============================================================================================================================+
+|                                                                                                                             |                         
+|   Testing speed up when using threads to download a list of High Res Images                                                 |                                               
+|                                                                                                                             |                     
+|   Threading (16) - 24.2seconds                                                                                              |           
+|   Non Threading - 26.6seconds                                                                                               |          
+|                                                                                                                             |             
+|   Not the speed up I was expecting - it may be due to implementation being correct, or using an incorrect amount of threads | 
+|   Where the overhead of thread creation and deletion outweighs the speed up (This seems unlikley)                           |                     
+|                                                                                                                             |                                  
++=============================================================================================================================+
+|                                                                                                                             |                          
+|   Just for fun - Using only 1 Thread in the number "max_workers" does incur a 2s slowdown (28.01s)                          |                          
+|   This of course is due to the overhead of creating and deleting threads                                                    |                              
+|                                                                                                                             |          
++=============================================================================================================================+
 
-Threading (16) - 24.2seconds
-Non Threading - 26.6seconds
-
-Not the speed up I was expecting - it may be due to implementation being correct, or using an incorrect amount of threads. 
-Where the overhead of thread creation and deletion outweighs the speed up (This seems unlikley)
 ''' 
 def main(threading : bool):
     start = time.perf_counter()
 
     if threading:     
-        with concurrent.futures.ThreadPoolExecutor(max_workers=NUM_THREADS) as executor:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.map(download_img, IMG_URLS, [True]*len(IMG_URLS))
     else:
         for url in IMG_URLS:
