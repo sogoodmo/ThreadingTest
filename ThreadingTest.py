@@ -5,6 +5,10 @@ import time
 import requests
 import random
 NUM_THREADS = 16
+
+'''
+Free to download and use image URLs
+'''
 IMG_URLS = [
     'https://images.unsplash.com/photo-1516117172878-fd2c41f4a759',
     'https://images.unsplash.com/photo-1532009324734-20a7a5813719',
@@ -37,7 +41,15 @@ def download_img(url : string, threaded : bool) -> None:
         print(f'{img_name} was downloaded')
 
     
-    
+'''
+Testing speed up when using threads to download a list of High Res Images 
+
+Threading (16) - 24.2seconds
+Non Threading - 26.6seconds
+
+Not the speed up I was expecting - it may be due to implementation being correct, or using an incorrect amount of threads. 
+Where the overhead of thread creation and deletion outweighs the speed up (This seems unlikley)
+''' 
 def main(threading : bool):
     start = time.perf_counter()
 
